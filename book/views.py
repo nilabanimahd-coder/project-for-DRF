@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from .serializer import CategorySerializer,BookSerializer
 from rest_framework import status
 from .models import CategoryModel,BookModel
+from django.shortcuts  import get_object_or_404
 
 # Create your views here.
 
@@ -36,3 +37,11 @@ class BookListView(APIView):
             return Response (ser.data,status=status.HTTP_201_CREATED)
         
         return Response(ser.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class BookDetailView(APIView):
+        
+    def get(self,request,pk):
+        book=get_object_or_404(BookModel,id=pk)
+        ser=BookSerializer(book)
+        return Response(ser.data,status=status.HTTP_200_OK)
+    
