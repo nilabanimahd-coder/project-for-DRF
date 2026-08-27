@@ -12,7 +12,7 @@ class BookModel(models.Model):
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=30)
     price = models.IntegerField()
-    stock = models.IntegerField()
+    stock = models.IntegerField(default=5)
     category = models.ForeignKey( CategoryModel,on_delete=models.CASCADE)
 
     def __str__(self):
