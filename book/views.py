@@ -4,7 +4,8 @@ from .serializer import CategorySerializer,BookSerializer
 from rest_framework import status
 from .models import CategoryModel,BookModel
 from django.shortcuts  import get_object_or_404
-
+from rest_framework.authentication import TokenAuthentication,SessionAuthentication
+from .permission import IsOwnerOrAdmin,IsAdminOrReadOnly
 # Create your views here.
 
 class CategoryListView(APIView):
@@ -24,6 +25,8 @@ class CategoryListView(APIView):
         
 
 class BookListView(APIView):
+    authentication_classes=[SessionAuthentication,TokenAuthentication]
+    permission_classes=[IsAdminOrReadOnly]
 
     def get(self,request):
         books=BookModel.objects.all()
@@ -33,20 +36,24 @@ class BookListView(APIView):
     def post(self,request):
         ser=BookSerializer(data=request.data)
         if ser.is_valid():
-            ser.save()
+            ser.save(owner=request.user)
             return Response (ser.data,status=status.HTTP_201_CREATED)
         
         return Response(ser.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class BookDetailView(APIView):
-        
+    authentication_classes=[SessionAuthentication,TokenAuthentication]
+    permission_classes=[IsOwnerOrAdmin]
+
     def get(self,request,pk):
         book=get_object_or_404(BookModel,id=pk)
+        self.check_object_permissions(self.request,book)
         ser=BookSerializer(book)
         return Response(ser.data,status=status.HTTP_200_OK)
     
     def put (self,request,pk):
         book=get_object_or_404(BookModel,id=pk)
+        self.check_object_permissions(self.request,book)
         ser=BookSerializer(book,data=request.data)
         if ser.is_valid() :
             ser.save()
@@ -56,6 +63,7 @@ class BookDetailView(APIView):
     
     def patch (self,request,pk):
         book=get_object_or_404(BookModel,id=pk)
+        self.check_object_permissions(self.request,book)
         ser=BookSerializer(book,data=request.data,partial=True)
         if ser.is_valid() :
             ser.save()
@@ -64,5 +72,6 @@ class BookDetailView(APIView):
     
     def delete(self,request,pk):
         book=get_object_or_404(BookModel,id=pk)
+        self.check_object_permissions(self.request,book)
         book.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'massage':'book delete'},status=status.HTTP_204_NO_CONTENT)

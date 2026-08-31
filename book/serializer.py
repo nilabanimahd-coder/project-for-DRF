@@ -39,10 +39,11 @@ class BookSerializer(serializers.ModelSerializer):
     
 
     price =serializers.IntegerField(validators=[minpricevalidator(0),MaxPriceValidator(10000)])
-    category=serializers.StringRelatedField()
+    category=serializers.PrimaryKeyRelatedField(queryset=CategoryModel.objects.all())
+    owner=serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model=BookModel
-        fields=['id','title','author','stock','price','price_with_tax','category']
-        read_only_fields=['stock']
-        
+        fields=['id','owner','title','author','stock','price','price_with_tax','category']
+        read_only_fields=['stock','owner']
+
