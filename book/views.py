@@ -5,7 +5,11 @@ from rest_framework import status
 from .models import CategoryModel,BookModel
 from django.shortcuts  import get_object_or_404
 from rest_framework.authentication import TokenAuthentication,SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .permission import IsOwnerOrAdmin,IsAdminOrReadOnly
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken,BlacklistedToken
 # Create your views here.
 
 class CategoryListView(APIView):
@@ -25,7 +29,7 @@ class CategoryListView(APIView):
         
 
 class BookListView(APIView):
-    authentication_classes=[SessionAuthentication,TokenAuthentication]
+    authentication_classes=[SessionAuthentication,JWTAuthentication]
     permission_classes=[IsAdminOrReadOnly]
 
     def get(self,request):
@@ -75,3 +79,19 @@ class BookDetailView(APIView):
         self.check_object_permissions(self.request,book)
         book.delete()
         return Response({'massage':'book delete'},status=status.HTTP_204_NO_CONTENT)
+    
+class LogoutApiview(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self,request):
+        user=request.user
+        tokens=OutstandingToken.objects.filter(user=user)
+
+        for token in tokens:
+            try:
+                BlacklistedToken.objects.get_or_create(token=token)
+            except Exception:
+                pass
+
+        return Response({"massage":"logout success"}, status=status.HTTP_205_RESET_CONTENT)
+        
