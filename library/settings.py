@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 
     #myapp
     'book',
-    'user',
+    'borrowing',
 ]
 
 MIDDLEWARE = [

@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 """
 admins
 nila password:nil@1383
-ali password:123456
+amir password:PXEx9HJ6H8Xrpyd
 reza password:rez@1388
 
 
