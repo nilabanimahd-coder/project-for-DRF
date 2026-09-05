@@ -34,7 +34,7 @@ class BookListView(APIView):
 
     def get(self,request):
         books=BookModel.objects.all()
-        ser=BookSerializer(books,many=True)
+        ser=BookSerializer(books,many=True,context={"request": request})
         return Response(ser.data,status=status.HTTP_200_OK)
     
     def post(self,request):

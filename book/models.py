@@ -25,6 +25,7 @@ class BookModel(models.Model):
     price = models.IntegerField()
     stock = models.IntegerField(default=5)
     category = models.ForeignKey( CategoryModel,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="books/",blank=True,null=True)
 
     def __str__(self):
         return self.title

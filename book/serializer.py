@@ -29,7 +29,7 @@ class minpricevalidator:
         
         return value
 
-    
+ 
 class BookSerializer(serializers.ModelSerializer):
     
     price_with_tax=serializers.SerializerMethodField()
@@ -44,6 +44,16 @@ class BookSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=BookModel
-        fields=['id','owner','title','author','stock','price','price_with_tax','category']
+        fields=['id','owner','title','author','stock','price','price_with_tax','category','image']
         read_only_fields=['stock','owner']
 
+
+image_url=serializers.SerializerMethodField () 
+
+def get_image_url(self,obj):
+    request=self.context.get("request")
+    
+    if obj.image:
+        return request.build_absolute_uri(obj.image.url)
+    
+    return None

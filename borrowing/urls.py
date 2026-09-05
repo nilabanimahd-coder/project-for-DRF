@@ -9,4 +9,3 @@ router.register("",views.BorrowingViewSet)
 urlpatterns = [
     path('',include(router.urls)),
 ]
-

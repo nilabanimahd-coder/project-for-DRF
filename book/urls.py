@@ -7,3 +7,4 @@ urlpatterns = [
     path("<int:pk>/",views.BookDetailView.as_view(),name="book"),
     path('api/logout/',views.LogoutApiview.as_view(), name='logout')
 ]
+
