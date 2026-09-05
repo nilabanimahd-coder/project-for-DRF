@@ -57,3 +57,4 @@ def get_image_url(self,obj):
         return request.build_absolute_uri(obj.image.url)
     
     return None
+
