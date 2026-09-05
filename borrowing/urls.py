@@ -1,9 +1,12 @@
-from django.urls import path
+from django.urls import path,include
 from . import views
+from rest_framework.routers import DefaultRouter
 
 app_name = 'borrowing'
 
+router=DefaultRouter()
+router.register("",views.BorrowingViewSet)
 urlpatterns = [
-    path("createlist/",views.BorrowingView.as_view()),
-    path("<int:pk>/",views.BorrowingUpadateView.as_view()),
+    path('',include(router.urls)),
 ]
+
